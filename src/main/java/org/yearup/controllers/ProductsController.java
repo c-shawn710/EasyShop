@@ -84,8 +84,24 @@ public class ProductsController {
     @PutMapping("{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void updateProduct(@PathVariable int id, @RequestBody Product product) {
-        try
-        {
+        try {
+            // Verify product exists
+            Product existingProduct = productDao.getById(id);
+
+            if (existingProduct == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No product found with ID: " + id + ".");
+            }
+            // Validate required fields
+            if (product.getName() != null || product.getName().isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product name required.");
+            }
+            if (product.getPrice() == null || product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Price must be greater than zero.");
+            }
+            if (product.getCategoryId() <= 0) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category ID required.");
+            }
+
             productDao.update(id, product);
         }
         catch(Exception ex)
