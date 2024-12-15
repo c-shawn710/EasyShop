@@ -27,12 +27,11 @@ public class ProductsController {
     public List<Product> search(@RequestParam(name="cat", required = false) Integer categoryId,
                                 @RequestParam(name="minPrice", required = false) BigDecimal minPrice,
                                 @RequestParam(name="maxPrice", required = false) BigDecimal maxPrice,
-                                @RequestParam(name="color", required = false) String color) {
-        try {
-            // Validate min and max price
-            if (minPrice != null && maxPrice != null && minPrice.compareTo(maxPrice) > 0) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "minPrice cannot be greater than maxPrice.");
-            }
+                                @RequestParam(name="color", required = false) String color
+    )
+    {
+        try
+        {
             return productDao.search(categoryId, minPrice, maxPrice, color);
         }
         catch(Exception ex)
@@ -43,13 +42,14 @@ public class ProductsController {
 
     @GetMapping("{id}")
     @PreAuthorize("permitAll()")
-    public Product getById(@PathVariable int id ) {
+    public Product getById(@PathVariable int id )
+    {
         try
         {
             var product = productDao.getById(id);
 
             if(product == null)
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with ID: " + id); //Add meaningful error message
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
             return product;
         }
@@ -61,18 +61,10 @@ public class ProductsController {
 
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Product addProduct(@RequestBody Product product) {
-        try {
-            // Validate required fields
-            if (product.getName() == null || product.getName().isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product name required.");
-            }
-            if (product.getPrice() == null || product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Price must be greater than zero.");
-            }
-            if (product.getCategoryId() <= 0) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category ID required.");
-            }
+    public Product addProduct(@RequestBody Product product)
+    {
+        try
+        {
             return productDao.create(product);
         }
         catch(Exception ex)
@@ -83,26 +75,11 @@ public class ProductsController {
 
     @PutMapping("{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void updateProduct(@PathVariable int id, @RequestBody Product product) {
-        try {
-            // Verify product exists
-            Product existingProduct = productDao.getById(id);
-
-            if (existingProduct == null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No product found with ID: " + id + ".");
-            }
-            // Validate required fields
-            if (product.getName() != null || product.getName().isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product name required.");
-            }
-            if (product.getPrice() == null || product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Price must be greater than zero.");
-            }
-            if (product.getCategoryId() <= 0) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category ID required.");
-            }
-
-            productDao.update(id, product);
+    public void updateProduct(@PathVariable int id, @RequestBody Product product)
+    {
+        try
+        {
+            productDao.create(product);
         }
         catch(Exception ex)
         {
