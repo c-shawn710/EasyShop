@@ -1,5 +1,6 @@
 package org.yearup.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,7 @@ public class ShoppingCartController
     private UserDao userDao;
     private ProductDao productDao;
 
+    @Autowired
     public ShoppingCartController(ShoppingCartDao shoppingCartDao, UserDao userDao, ProductDao productDao) {
         this.shoppingCartDao = shoppingCartDao;
         this.userDao = userDao;
