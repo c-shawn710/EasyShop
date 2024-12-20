@@ -36,7 +36,7 @@ public class ProfileController {
             User user = userDao.getByUserName(userName);
             int userId = user.getId();
 
-            // use the userDao to get user's profile
+            // use the profileDao to get user's profile
             return profileDao.getByUserId(userId);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
