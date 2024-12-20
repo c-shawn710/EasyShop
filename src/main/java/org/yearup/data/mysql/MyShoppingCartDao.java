@@ -44,8 +44,8 @@ public class MyShoppingCartDao extends MySqlDaoBase implements ShoppingCartDao {
                          rs.getString("description"),
                          rs.getString("color"),
                          rs.getInt("stock"),
-                         rs.getBoolean("image_url"),
-                         rs.getString("featured")
+                         rs.getBoolean("featured"),
+                         rs.getString("image_url")
                  );
 
                  ShoppingCartItem item = new ShoppingCartItem();
