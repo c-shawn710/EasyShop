@@ -2,6 +2,7 @@ package org.yearup.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -49,7 +50,7 @@ public class ShoppingCartController
             // use the shoppingcartDao to get all items in the cart and return the cart
             return shoppingCartDao.getByUserId(userId);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
@@ -58,7 +59,7 @@ public class ShoppingCartController
     // add a POST method to add a product to the cart - the url should be
     // https://localhost:8080/cart/products/15 (15 is the productId to be added
     @PostMapping("/products/{productId}")
-    public void addProductToCart(@PathVariable int productId, Principal principal) {
+    public ResponseEntity<String> addProductToCart(@PathVariable int productId, Principal principal) {
         try
         {
             //Get logged-in user's username
@@ -77,6 +78,9 @@ public class ShoppingCartController
             } else {
                 shoppingCartDao.addItem(userId, productId, 1);
             }
+
+            return ResponseEntity.ok("Product successfully added to cart.");
+
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to add product to cart.");
         }
@@ -86,7 +90,7 @@ public class ShoppingCartController
     // https://localhost:8080/cart/products/15 (15 is the productId to be updated)
     // the BODY should be a ShoppingCartItem - quantity is the only value that will be updated
     @PutMapping("/products/{productId}")
-    public void updateCart(@PathVariable int productId, @RequestBody ShoppingCartItem item, Principal principal) {
+    public ResponseEntity<String> updateCart(@PathVariable int productId, @RequestBody ShoppingCartItem item, Principal principal) {
         try
         {
             //Get logged-in user's username
@@ -96,6 +100,9 @@ public class ShoppingCartController
 
             //Update product quantity
             shoppingCartDao.updateItem(userId, productId, item.getQuantity());
+
+            return ResponseEntity.ok("Cart successfully updated.");
+
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to update product quantity.");
         }
@@ -104,7 +111,7 @@ public class ShoppingCartController
     // add a DELETE method to clear all products from the current users cart
     // https://localhost:8080/cart
     @DeleteMapping("")
-    public void clearCart(Principal principal) {
+    public ResponseEntity<String> clearCart(Principal principal) {
         try
         {
             //Get logged-in user's username
@@ -114,6 +121,9 @@ public class ShoppingCartController
 
             //Clear the cart
             shoppingCartDao.clearCart(userId);
+
+            return ResponseEntity.ok("Cart has been cleared.");
+
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable clear cart.");
         }
